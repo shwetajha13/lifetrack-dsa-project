@@ -1,0 +1,502 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Activity History | LifeTrack</title>
+
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #f7f5ff;
+      color: #292543;
+    }
+
+    header {
+      background: white;
+      padding: 20px 7%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+      flex-wrap: wrap;
+      box-shadow: 0 3px 20px #30265a0a;
+    }
+
+    .logo { color: #6256d9; font-size: 25px; font-weight: bold; }
+
+    nav { display: flex; gap: 20px; flex-wrap: wrap; align-items: center; }
+
+    nav a {
+      color: #68647e;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: bold;
+    }
+
+    nav a.active { color: #6256d9; }
+
+    main { max-width: 1100px; margin: 35px auto; padding: 0 22px; }
+
+    .hero {
+      background: linear-gradient(120deg, #7568e8, #a18af4, #ed9dc7);
+      color: white;
+      padding: 32px;
+      border-radius: 24px;
+      margin-bottom: 25px;
+    }
+
+    .hero h1 { font-size: 32px; margin-bottom: 12px; }
+    .hero p { line-height: 1.7; }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+      margin-bottom: 25px;
+    }
+
+    .stat {
+      background: white;
+      padding: 22px;
+      border: 1px solid #efecfa;
+      border-radius: 18px;
+    }
+
+    .stat p { color: #77728f; font-size: 14px; margin-bottom: 10px; }
+    .stat strong { color: #6256d9; font-size: 28px; }
+
+    .panel {
+      background: white;
+      border: 1px solid #efecfa;
+      border-radius: 20px;
+      padding: 25px;
+      margin-bottom: 25px;
+    }
+
+    .panel h2 { font-size: 21px; margin-bottom: 18px; }
+
+    .chart-subtitle {
+      color: #77728f;
+      font-size: 13px;
+      margin: -8px 0 20px;
+      line-height: 1.6;
+    }
+
+    .chart {
+      height: 220px;
+      display: flex;
+      align-items: stretch;
+      gap: 12px;
+      padding: 10px 0 0;
+      border-bottom: 1px solid #efecfa;
+    }
+
+    .chart-day {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 9px;
+    }
+
+    .bar-area {
+      width: 100%;
+      flex: 1;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      position: relative;
+    }
+
+    .bar {
+      width: min(38px, 80%);
+      min-height: 0;
+      background: linear-gradient(180deg, #a18af4, #6256d9);
+      border-radius: 8px 8px 0 0;
+      transition: height 0.25s ease;
+    }
+
+    .bar-value {
+      color: #6256d9;
+      font-size: 12px;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    .day-label {
+      color: #77728f;
+      font-size: 12px;
+      padding-bottom: 10px;
+    }
+
+    .chart-empty {
+      color: #77728f;
+      text-align: center;
+      padding: 25px 0;
+      font-size: 14px;
+    }
+
+    .history-entry {
+      padding: 18px 0;
+      border-bottom: 1px solid #f0eef7;
+    }
+
+    .history-entry:last-child { border-bottom: none; }
+
+    .entry-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .entry-top h3 { font-size: 16px; margin-bottom: 8px; }
+
+    .details { color: #77728f; font-size: 13px; line-height: 1.7; }
+
+    .status {
+      padding: 7px 10px;
+      border-radius: 9px;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    .completed { background: #e3f8ec; color: #217747; }
+    .pending { background: #fff0db; color: #925b12; }
+
+    .date-heading {
+      margin-top: 24px;
+      margin-bottom: 4px;
+      color: #6256d9;
+      font-size: 16px;
+    }
+
+    .message { color: #77728f; line-height: 1.7; padding: 15px 0; }
+
+    .back-link {
+      display: inline-block;
+      margin-top: 0;
+      margin-bottom: 5px;
+      background: #6256d9;
+      color: white;
+      text-decoration: none;
+      padding: 13px 18px;
+      border-radius: 11px;
+      font-weight: bold;
+    }
+
+    footer { text-align: center; color: #858098; padding: 30px 15px; font-size: 13px; }
+
+    @media (max-width: 600px) {
+      header { padding: 18px 5%; }
+      .hero { padding: 25px; }
+      .hero h1 { font-size: 26px; }
+      .panel { padding: 18px; }
+      .chart { gap: 5px; height: 190px; }
+      .day-label { font-size: 11px; }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="logo">✦ LifeTrack</div>
+    <nav>
+      <a href="dashboard.html">Dashboard</a>
+      <a href="activities.html">Activities</a>
+      <a href="history.html" class="active">History</a>
+      <a href="#" id="logoutLink">Log out</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <h1>📅 Your Activity History</h1>
+      <p>Look back at your daily efforts. Every small step counts, and every recorded day is part of your journey.</p>
+    </section>
+
+    <section class="stats">
+      <article class="stat">
+        <p>Recorded activity entries</p>
+        <strong id="totalEntries">—</strong>
+      </article>
+      <article class="stat">
+        <p>Total completed activities</p>
+        <strong id="completedEntries">—</strong>
+      </article>
+      <article class="stat">
+        <p>Overall completion rate</p>
+        <strong id="completionRate">—%</strong>
+      </article>
+      <article class="stat">
+        <p>Minutes spent (completed)</p>
+        <strong id="totalMinutes">—</strong>
+      </article>
+    </section>
+
+    <section class="panel">
+      <h2>📊 Your last 7 days</h2>
+      <p class="chart-subtitle">
+        Completed activities for each day, based on your saved history.
+      </p>
+      <div id="weeklyChart" class="chart" role="img"
+           aria-label="Bar chart of completed activities for the last seven days"></div>
+      <p id="weeklySummary" class="message" aria-live="polite"></p>
+    </section>
+
+    <section class="stats">
+      <article class="stat">
+        <p>Activities completed this week</p>
+        <strong id="weeklyCompleted">—</strong>
+      </article>
+      <article class="stat">
+        <p>Weekly completion rate</p>
+        <strong id="weeklyRate">—%</strong>
+      </article>
+    </section>
+
+    <section class="panel">
+      <h2>Past records</h2>
+      <p id="message" class="message" role="status" aria-live="polite">Loading your history...</p>
+      <div id="historyList"></div>
+    </section>
+
+    <a class="back-link" href="dashboard.html">← Back to dashboard</a>
+  </main>
+
+  <footer>Made with care 💜 · LifeTrack Wellness</footer>
+
+  <script>
+    const historyList = document.getElementById("historyList");
+    const message = document.getElementById("message");
+
+    function formatDate(dateString) {
+      const parts = dateString.split("-").map(Number);
+      const date = new Date(parts[0], parts[1] - 1, parts[2]);
+
+      return date.toLocaleDateString(undefined, {
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric"
+      });
+    }
+
+    function getLocalDateKey(date) {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const day = String(date.getDate()).padStart(2, "0");
+      return `${year}-${month}-${day}`;
+    }
+
+    function renderWeeklyAnalytics(history) {
+      const today = new Date();
+      const days = [];
+
+      // Create date keys for today and the previous six days.
+      for (let offset = 6; offset >= 0; offset--) {
+        const date = new Date(
+          today.getFullYear(),
+          today.getMonth(),
+          today.getDate() - offset
+        );
+
+        days.push({
+          key: getLocalDateKey(date),
+          label: date.toLocaleDateString(undefined, { weekday: "short" }),
+          completed: 0,
+          entries: 0
+        });
+      }
+
+      const daysByKey = new Map(days.map(day => [day.key, day]));
+
+      history.forEach(item => {
+        const day = daysByKey.get(item.date);
+        if (!day) return;
+
+        day.entries++;
+
+        if (item.status === "completed") {
+          day.completed++;
+        }
+      });
+
+      const weeklyCompleted = days.reduce(
+        (sum, day) => sum + day.completed, 0
+      );
+
+      const weeklyEntries = days.reduce(
+        (sum, day) => sum + day.entries, 0
+      );
+
+      const weeklyRate = weeklyEntries
+        ? Math.round(weeklyCompleted / weeklyEntries * 100)
+        : 0;
+
+      document.getElementById("weeklyCompleted").textContent = weeklyCompleted;
+      document.getElementById("weeklyRate").textContent = weeklyRate + "%";
+
+      const chart = document.getElementById("weeklyChart");
+      chart.replaceChildren();
+
+      const maxCompleted = Math.max(1, ...days.map(day => day.completed));
+
+      days.forEach(day => {
+        const column = document.createElement("div");
+        column.className = "chart-day";
+
+        const area = document.createElement("div");
+        area.className = "bar-area";
+
+        const value = document.createElement("span");
+        value.className = "bar-value";
+        value.textContent = day.completed;
+
+        const bar = document.createElement("div");
+        bar.className = "bar";
+        bar.style.height = day.completed
+          ? `${Math.max(8, day.completed / maxCompleted * 85)}%`
+          : "0";
+
+        bar.title = `${day.completed} completed out of ${day.entries} recorded`;
+
+        area.append(value, bar);
+
+        const label = document.createElement("span");
+        label.className = "day-label";
+        label.textContent = day.label;
+
+        column.append(area, label);
+        chart.appendChild(column);
+      });
+
+      document.getElementById("weeklySummary").textContent =
+        weeklyEntries
+          ? `You completed ${weeklyCompleted} of ${weeklyEntries} recorded activities over the last seven days. Keep going!`
+          : "No activity records were found for the last seven days. Complete an activity to start your weekly chart.";
+    }
+
+    async function loadHistory() {
+      try {
+        const response = await fetch("/api/history");
+
+        if (response.status === 401) {
+          window.location.replace("login.html");
+          return;
+        }
+
+        if (!response.ok) {
+          throw new Error("Could not load history.");
+        }
+
+        const result = await response.json();
+        const history = result.history || [];
+
+        const completedItems = history.filter(
+          item => item.status === "completed"
+        );
+
+        const completed = completedItems.length;
+
+        const totalMinutes = completedItems.reduce(
+          (sum, item) => sum + (Number(item.duration) || 0), 0
+        );
+
+        document.getElementById("totalEntries").textContent = history.length;
+        document.getElementById("completedEntries").textContent = completed;
+        document.getElementById("totalMinutes").textContent = totalMinutes;
+        document.getElementById("completionRate").textContent =
+          (history.length ? Math.round(completed / history.length * 100) : 0) + "%";
+
+        renderWeeklyAnalytics(history);
+
+        historyList.replaceChildren();
+
+        if (history.length === 0) {
+          message.textContent =
+            "No activity records yet. Complete an activity to start building your history.";
+          return;
+        }
+
+        message.textContent = "";
+
+        // Group the records by date.
+        const groupedHistory = new Map();
+
+        history.forEach(item => {
+          if (!groupedHistory.has(item.date)) {
+            groupedHistory.set(item.date, []);
+          }
+
+          groupedHistory.get(item.date).push(item);
+        });
+
+        for (const [date, entries] of groupedHistory) {
+          const heading = document.createElement("h3");
+          heading.className = "date-heading";
+          heading.textContent = formatDate(date);
+          historyList.appendChild(heading);
+
+          entries.forEach(item => {
+            const entry = document.createElement("article");
+            entry.className = "history-entry";
+
+            const top = document.createElement("div");
+            top.className = "entry-top";
+
+            const info = document.createElement("div");
+            const name = document.createElement("h3");
+            name.textContent = item.activityName;
+
+            const details = document.createElement("p");
+            details.className = "details";
+            details.textContent =
+              item.category + " · " + item.duration + " minutes";
+
+            info.append(name, details);
+
+            const badge = document.createElement("span");
+            const isCompleted = item.status === "completed";
+            badge.className = "status " + (isCompleted ? "completed" : "pending");
+            badge.textContent = isCompleted ? "✓ Completed" : "○ Pending";
+
+            top.append(info, badge);
+            entry.appendChild(top);
+            historyList.appendChild(entry);
+          });
+        }
+      } catch (error) {
+        console.error("History loading error:", error);
+        message.textContent =
+          "Could not load your history. Check that the server is running, then refresh.";
+      }
+    }
+
+    document.getElementById("logoutLink").addEventListener("click", async event => {
+      event.preventDefault();
+
+      try {
+        const response = await fetch("/api/logout", { method: "POST" });
+
+        if (response.ok) {
+          window.location.replace("index.html");
+        } else {
+          message.textContent = "Logout failed. Please try again.";
+        }
+      } catch (error) {
+        message.textContent = "Could not connect to the server to log out.";
+      }
+    });
+
+    loadHistory();
+  </script>
+</body>
+</html>

@@ -1,0 +1,456 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Activities | LifeTrack</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: Arial, sans-serif; background: #f7f5ff; color: #292543; }
+    header {
+      background: white; padding: 20px 7%; display: flex;
+      justify-content: space-between; align-items: center; gap: 15px;
+      flex-wrap: wrap; box-shadow: 0 3px 20px #30265a0a;
+    }
+    .logo { color: #6256d9; font-size: 25px; font-weight: bold; }
+    nav { display: flex; gap: 20px; align-items: center; flex-wrap: wrap; }
+    nav a { color: #68647e; text-decoration: none; font-size: 14px; font-weight: bold; }
+    nav a.active, nav a:hover { color: #6256d9; }
+    nav a.logout { color: #c04b62; }
+    main { max-width: 1150px; margin: 35px auto; padding: 0 22px; }
+    .hero {
+      padding: 32px; border-radius: 24px; color: white;
+      background: linear-gradient(120deg, #7568e8, #a18af4, #ed9dc7);
+      margin-bottom: 30px;
+    }
+    .hero p { line-height: 1.7; margin-top: 12px; max-width: 600px; }
+    .hero h1 { font-size: 32px; }
+    .filters { display: flex; gap: 12px; flex-wrap: wrap; margin: 22px 0; }
+    input, select {
+      padding: 13px 15px; border: 1px solid #e1deed; border-radius: 12px;
+      background: white; color: #292543; font-size: 14px;
+    }
+    input { flex: 1; min-width: 200px; }
+    .filters select { min-width: 160px; }
+    .section-title { font-size: 23px; margin: 25px 0 18px; }
+    .activity-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(235px, 1fr));
+      gap: 20px;
+    }
+    .activity-card {
+      background: white; border: 1px solid #efecfa; border-radius: 20px;
+      padding: 23px; display: flex; flex-direction: column; min-height: 270px;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .activity-card:hover { transform: translateY(-4px); box-shadow: 0 12px 28px #40357c12; }
+    
+    .activity-card.recommended-highlight {
+      border: 2px solid #6c5ce7;
+      box-shadow: 0 0 0 4px #6c5ce722;
+      background: #faf9ff;
+    }
+
+    .activity-icon {
+      width: 55px; height: 55px; display: grid; place-items: center;
+      background: #eeebff; border-radius: 16px; font-size: 27px; margin-bottom: 18px;
+    }
+    .activity-card h3 { font-size: 19px; margin-bottom: 9px; }
+    .activity-card p { color: #77748a; font-size: 14px; line-height: 1.6; margin-bottom: 15px; }
+    .meta { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 18px; }
+    .tag { background: #f0edff; color: #6256d9; padding: 7px 10px; border-radius: 9px; font-size: 12px; }
+    .complete-button {
+      margin-top: auto; width: 100%; padding: 12px; border: none; border-radius: 11px;
+      background: #6256d9; color: white; font-size: 14px; font-weight: bold; cursor: pointer;
+    }
+    .complete-button:hover { background: #5145c4; }
+    .complete-button.done { background: #23845b; }
+    .complete-button:disabled { opacity: 0.65; cursor: wait; }
+    .progress-panel {
+      margin-top: 28px; padding: 22px; background: white;
+      border: 1px solid #efecfa; border-radius: 18px;
+    }
+    .progress-track {
+      width: 100%; height: 10px; background: #eeebf6;
+      border-radius: 20px; margin: 15px 0 10px; overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%; width: 0%;
+      background: linear-gradient(90deg, #7568e8, #ed9dc7);
+      border-radius: 20px; transition: width 0.3s;
+    }
+    #progressText { color: #77748a; font-size: 14px; }
+    .empty-message {
+      display: none; padding: 25px; text-align: center; color: #77748a;
+      background: white; border-radius: 15px; margin-top: 15px;
+    }
+    .status-message { margin-top: 12px; color: #a33333; font-size: 14px; }
+    footer { text-align: center; color: #858098; padding: 30px 15px; font-size: 13px; }
+    @media (max-width: 600px) {
+      header { padding: 18px 5%; }
+      .hero h1 { font-size: 26px; }
+      nav { gap: 13px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">✦ LifeTrack</div>
+    <nav>
+      <a href="dashboard.html">Dashboard</a>
+      <a href="activities.html" class="active">Activities</a>
+      <a href="history.html">History</a>
+      <a href="#" class="logout" id="logoutLink">Log out</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <h1>Make today count 🌈</h1>
+      <p>Explore small wellness activities, find what works for you, and celebrate every step towards a healthier routine.</p>
+    </section>
+
+    <h2 class="section-title">Explore activities ✨</h2>
+
+    <div class="filters">
+      <input type="search" id="searchInput" placeholder="🔎 Search activities..." aria-label="Search activities">
+      <select id="categoryFilter" aria-label="Filter by category">
+        <option value="all">All categories</option>
+        <option value="Mindfulness">Mindfulness</option>
+        <option value="Fitness">Fitness</option>
+        <option value="Healthy habits">Healthy habits</option>
+        <option value="Learning">Learning</option>
+      </select>
+      <select id="sortFilter" aria-label="Sort activities">
+        <option value="default">Default order</option>
+        <option value="shortest">Shortest first</option>
+        <option value="longest">Longest first</option>
+        <option value="name">Name A–Z</option>
+      </select>
+    </div>
+
+    <div class="activity-grid" id="activityGrid">
+      <article class="activity-card" data-id="1" data-name="Morning meditation" data-category="Mindfulness" data-duration="10">
+        <div class="activity-icon">🧘</div>
+        <h3>Morning meditation</h3>
+        <p>Take a few quiet moments to relax, breathe, and clear your mind.</p>
+        <div class="meta"><span class="tag">Mindfulness</span><span class="tag">10 minutes</span></div>
+        <button class="complete-button" type="button">Mark as complete</button>
+      </article>
+
+      <article class="activity-card" data-id="2" data-name="Take a short walk" data-category="Fitness" data-duration="15">
+        <div class="activity-icon">🚶</div>
+        <h3>Take a short walk</h3>
+        <p>Stretch your legs and get moving with a refreshing walk.</p>
+        <div class="meta"><span class="tag">Fitness</span><span class="tag">15 minutes</span></div>
+        <button class="complete-button" type="button">Mark as complete</button>
+      </article>
+
+      <article class="activity-card" data-id="3" data-name="Drink some water" data-category="Healthy habits" data-duration="2">
+        <div class="activity-icon">💧</div>
+        <h3>Drink some water</h3>
+        <p>Pause for a moment and remember to hydrate throughout the day.</p>
+        <div class="meta"><span class="tag">Healthy habits</span><span class="tag">2 minutes</span></div>
+        <button class="complete-button" type="button">Mark as complete</button>
+      </article>
+
+      <article class="activity-card" data-id="4" data-name="Read a few pages" data-category="Learning" data-duration="15">
+        <div class="activity-icon">📚</div>
+        <h3>Read a few pages</h3>
+        <p>Give yourself time to learn something new or enjoy a good book.</p>
+        <div class="meta"><span class="tag">Learning</span><span class="tag">15 minutes</span></div>
+        <button class="complete-button" type="button">Mark as complete</button>
+      </article>
+
+      <article class="activity-card" data-id="5" data-name="Gentle stretching" data-category="Fitness" data-duration="5">
+        <div class="activity-icon">🤸</div>
+        <h3>Gentle stretching</h3>
+        <p>Release some tension with a few comfortable, gentle stretches.</p>
+        <div class="meta"><span class="tag">Fitness</span><span class="tag">5 minutes</span></div>
+        <button class="complete-button" type="button">Mark as complete</button>
+      </article>
+
+      <article class="activity-card" data-id="6" data-name="Write in a journal" data-category="Mindfulness" data-duration="10">
+        <div class="activity-icon">📝</div>
+        <h3>Write in a journal</h3>
+        <p>Reflect on your day and write down a thought or something you appreciate.</p>
+        <div class="meta"><span class="tag">Mindfulness</span><span class="tag">10 minutes</span></div>
+        <button class="complete-button" type="button">Mark as complete</button>
+      </article>
+    </div>
+
+    <p class="empty-message" id="emptyMessage">No activities found. Try a different search.</p>
+
+    <section class="progress-panel">
+      <h2>🎯 Today's progress</h2>
+      <div class="progress-track">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+      <p id="progressText">Loading today's progress...</p>
+      <p class="status-message" id="statusMessage" role="status" aria-live="polite"></p>
+    </section>
+  </main>
+
+  <footer>Small steps, meaningful change 💜 · LifeTrack Wellness</footer>
+
+  <script>
+    const grid = document.getElementById("activityGrid");
+    const searchInput = document.getElementById("searchInput");
+    const categoryFilter = document.getElementById("categoryFilter");
+    const sortFilter = document.getElementById("sortFilter");
+    const emptyMessage = document.getElementById("emptyMessage");
+    const progressFill = document.getElementById("progressFill");
+    const progressText = document.getElementById("progressText");
+    const statusMessage = document.getElementById("statusMessage");
+
+    // Preserve the original activity order for the default view.
+    const originalOrder = Array.from(grid.querySelectorAll(".activity-card"));
+    
+    const params = new URLSearchParams(window.location.search);
+    const recommendedActivityId = params.get("activityId");
+
+    if (recommendedActivityId) {
+      const targetCard = originalOrder.find(
+        card => card.dataset.id === recommendedActivityId
+      );
+
+      if (targetCard) {
+        targetCard.classList.add("recommended-highlight");
+
+        targetCard.scrollIntoView({
+          behavior: "smooth",
+          block: "center"
+        });
+      }
+    }
+
+
+    function getCards() {
+      return Array.from(grid.querySelectorAll(".activity-card"));
+    }
+
+    // DSA: Linear search checks each activity until it finds a match.
+    function linearSearch(cards, query) {
+      const matches = [];
+
+      for (let i = 0; i < cards.length; i++) {
+        const name = cards[i].dataset.name.toLowerCase();
+        const categoryName = cards[i].dataset.category.toLowerCase();
+
+        if (name.includes(query) || categoryName.includes(query)) {
+          matches.push(cards[i]);
+        }
+      }
+
+      return matches;
+    }
+
+    // DSA: Insertion sort orders activities using the selected rule.
+    function insertionSort(cards, compare) {
+      const sorted = [...cards];
+
+      for (let i = 1; i < sorted.length; i++) {
+        const current = sorted[i];
+        let j = i - 1;
+
+        while (j >= 0 && compare(sorted[j], current) > 0) {
+          sorted[j + 1] = sorted[j];
+          j--;
+        }
+
+        sorted[j + 1] = current;
+      }
+
+      return sorted;
+    }
+
+    function compareActivities(a, b, sort) {
+      if (sort === "shortest") {
+        return Number(a.dataset.duration) - Number(b.dataset.duration);
+      }
+
+      if (sort === "longest") {
+        return Number(b.dataset.duration) - Number(a.dataset.duration);
+      }
+
+      if (sort === "name") {
+        return a.dataset.name.localeCompare(b.dataset.name);
+      }
+
+      return Number(a.dataset.id) - Number(b.dataset.id);
+    }
+
+    function updateProgress() {
+      const cards = getCards();
+      const completed = cards.filter(card =>
+        card.querySelector(".complete-button").classList.contains("done")
+      ).length;
+
+      const percentage = Math.round((completed / cards.length) * 100);
+      progressFill.style.width = percentage + "%";
+      progressText.textContent =
+        `${completed} of ${cards.length} activities completed today (${percentage}%).`;
+    }
+
+    function filterAndSort() {
+      const query = searchInput.value.trim().toLowerCase();
+      const category = categoryFilter.value;
+      const sort = sortFilter.value;
+
+      // Linear search is used when a search term is entered.
+      let matchingCards = query
+        ? linearSearch(originalOrder, query)
+        : [...originalOrder];
+
+      // Apply the category filter to the search results.
+      matchingCards = matchingCards.filter(card =>
+        category === "all" || card.dataset.category === category
+      );
+
+      // Sort only the matching activities.
+      if (sort !== "default") {
+        matchingCards = insertionSort(
+          matchingCards,
+          (a, b) => compareActivities(a, b, sort)
+        );
+      } else {
+        matchingCards = insertionSort(
+          matchingCards,
+          (a, b) => compareActivities(a, b, "default")
+        );
+      }
+
+      // Reorder cards and hide those that do not match.
+      const matchingSet = new Set(matchingCards);
+
+      matchingCards.forEach(card => {
+        card.style.display = "flex";
+        grid.appendChild(card);
+      });
+
+      originalOrder.forEach(card => {
+        if (!matchingSet.has(card)) {
+          card.style.display = "none";
+          grid.appendChild(card);
+        }
+      });
+
+      emptyMessage.style.display = matchingCards.length ? "none" : "block";
+    }
+
+    async function loadSavedProgress() {
+      try {
+        const response = await fetch("/api/activities");
+
+        if (response.status === 401) {
+          window.location.href = "login.html";
+          return;
+        }
+
+        if (!response.ok) throw new Error("Could not load activities");
+
+        const result = await response.json();
+
+        result.activities.forEach(activity => {
+          const card = originalOrder.find(
+            item => Number(item.dataset.id) === Number(activity.id)
+          );
+
+          if (!card) return;
+
+          const button = card.querySelector(".complete-button");
+          const done = activity.completed === 1 || activity.completed === true;
+
+          button.classList.toggle("done", done);
+          button.textContent = done ? "✓ Completed — undo" : "Mark as complete";
+        });
+
+        updateProgress();
+        statusMessage.textContent = "";
+      } catch (error) {
+        progressText.textContent = "Could not load saved progress.";
+        statusMessage.textContent =
+          "Please check that the server is running, then refresh this page.";
+      }
+    }
+
+    originalOrder.forEach(card => {
+      const button = card.querySelector(".complete-button");
+
+      button.addEventListener("click", async () => {
+        const activityId = Number(card.dataset.id);
+        const isDone = !button.classList.contains("done");
+
+        button.disabled = true;
+        statusMessage.textContent = "";
+
+        try {
+          const response = await fetch("/api/progress", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              activityId,
+              completed: isDone
+            })
+          });
+
+          if (response.status === 401) {
+            window.location.href = "login.html";
+            return;
+          }
+
+          const result = await response.json().catch(() => ({}));
+
+          if (!response.ok) {
+            throw new Error(result.message || "Could not save progress");
+          }
+
+          button.classList.toggle("done", isDone);
+          button.textContent = isDone
+            ? "✓ Completed — undo"
+            : "Mark as complete";
+
+          updateProgress();
+        } catch (error) {
+          statusMessage.textContent =
+            error.message || "Could not save progress. Please try again.";
+        } finally {
+          button.disabled = false;
+        }
+      });
+    });
+
+    // Log out using the server session endpoint.
+    document.getElementById("logoutLink").addEventListener("click", async event => {
+      event.preventDefault();
+
+      const link = event.currentTarget;
+      link.style.pointerEvents = "none";
+      statusMessage.textContent = "";
+
+      try {
+        const response = await fetch("/api/logout", {
+          method: "POST"
+        });
+
+        if (!response.ok) {
+          throw new Error("Logout failed. Please try again.");
+        }
+
+        window.location.href = "index.html";
+      } catch (error) {
+        link.style.pointerEvents = "";
+        statusMessage.textContent = error.message;
+      }
+    });
+
+    searchInput.addEventListener("input", filterAndSort);
+    categoryFilter.addEventListener("change", filterAndSort);
+    sortFilter.addEventListener("change", filterAndSort);
+
+    filterAndSort();
+    loadSavedProgress();
+  </script>
+</body>
+</html>

@@ -1,0 +1,237 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login | LifeTrack</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 25px;
+      background: linear-gradient(135deg, #fff0e7, #ece9ff, #e2f8ef);
+      color: #282542;
+    }
+
+    .card {
+      width: 100%;
+      max-width: 440px;
+      padding: 38px;
+      background: rgba(255, 255, 255, 0.95);
+      border: 1px solid white;
+      border-radius: 26px;
+      box-shadow: 0 20px 60px #40357c18;
+    }
+
+    .logo {
+      text-align: center;
+      color: #6256d9;
+      font-size: 25px;
+      font-weight: bold;
+      margin-bottom: 26px;
+    }
+
+    .symbol {
+      width: 58px;
+      height: 58px;
+      display: grid;
+      place-items: center;
+      margin: 0 auto 18px;
+      background: #eeebff;
+      border-radius: 18px;
+      font-size: 29px;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 29px;
+      margin-bottom: 10px;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #77748a;
+      line-height: 1.6;
+      margin-bottom: 27px;
+    }
+
+    label {
+      display: block;
+      font-size: 14px;
+      font-weight: bold;
+      margin: 17px 0 8px;
+    }
+
+    input {
+      width: 100%;
+      padding: 14px;
+      border: 1px solid #e1deed;
+      border-radius: 12px;
+      font-size: 15px;
+      outline: none;
+    }
+
+    input:focus {
+      border-color: #6256d9;
+      box-shadow: 0 0 0 3px #6256d918;
+    }
+
+    button {
+      width: 100%;
+      padding: 15px;
+      margin-top: 25px;
+      border: 0;
+      border-radius: 12px;
+      background: #6256d9;
+      color: white;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #5145c4;
+    }
+
+    button:disabled {
+      opacity: 0.65;
+      cursor: not-allowed;
+    }
+
+    .message {
+      display: none;
+      margin-top: 16px;
+      padding: 12px;
+      border-radius: 10px;
+      font-size: 14px;
+      line-height: 1.5;
+      overflow-wrap: anywhere;
+    }
+
+    .message.error {
+      display: block;
+      background: #fff0f0;
+      color: #a51d2d;
+    }
+
+    .bottom {
+      text-align: center;
+      color: #77748a;
+      margin-top: 22px;
+      font-size: 14px;
+    }
+
+    a {
+      color: #6256d9;
+      font-weight: bold;
+      text-decoration: none;
+    }
+
+    .back {
+      display: block;
+      text-align: center;
+      margin-top: 22px;
+      font-size: 14px;
+    }
+  </style>
+</head>
+
+<body>
+  <main class="card">
+    <div class="logo">✦ LifeTrack</div>
+    <div class="symbol">🌿</div>
+
+    <h1>Welcome back!</h1>
+    <p class="subtitle">Your wellness journey continues here.</p>
+
+    <form id="loginForm">
+      <label for="email">Email address</label>
+      <input
+        id="email"
+        name="email"
+        type="email"
+        placeholder="you@example.com"
+        autocomplete="email"
+        required
+      >
+
+      <label for="password">Password</label>
+      <input
+        id="password"
+        name="password"
+        type="password"
+        placeholder="Enter your password"
+        autocomplete="current-password"
+        required
+      >
+
+      <button id="submitButton" type="submit">Log In →</button>
+      <p id="formMessage" class="message" role="alert" aria-live="polite"></p>
+    </form>
+
+    <p class="bottom">
+      Don't have an account?
+      <a href="register.html">Create one</a>
+    </p>
+
+    <a class="back" href="index.html">← Back to home</a>
+  </main>
+
+  <script>
+    const loginForm = document.getElementById("loginForm");
+    const submitButton = document.getElementById("submitButton");
+    const formMessage = document.getElementById("formMessage");
+
+    function showError(message) {
+      formMessage.textContent = message;
+      formMessage.className = "message error";
+    }
+
+    loginForm.addEventListener("submit", async function (event) {
+      event.preventDefault();
+
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value;
+
+      submitButton.disabled = true;
+      submitButton.textContent = "Logging in...";
+      formMessage.className = "message";
+
+      try {
+        const response = await fetch("/api/login", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ email, password })
+        });
+
+        const result = await response.json();
+
+        if (!response.ok) {
+          showError(result.message || "Login failed. Please try again.");
+          return;
+        }
+
+        window.location.href = "dashboard.html";
+      } catch (error) {
+        showError("Could not connect to the server. Please try again.");
+      } finally {
+        submitButton.disabled = false;
+        submitButton.textContent = "Log In →";
+      }
+    });
+  </script>
+</body>
+</html>

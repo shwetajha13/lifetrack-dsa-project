@@ -1,0 +1,301 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Account | LifeTrack</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 25px;
+      background: linear-gradient(135deg, #fff0e7, #ece9ff, #e2f8ef);
+      color: #282542;
+    }
+
+    .card {
+      width: 100%;
+      max-width: 440px;
+      padding: 38px;
+      background: rgba(255, 255, 255, 0.95);
+      border: 1px solid white;
+      border-radius: 26px;
+      box-shadow: 0 20px 60px #40357c18;
+    }
+
+    .logo {
+      text-align: center;
+      color: #6256d9;
+      font-size: 25px;
+      font-weight: bold;
+      margin-bottom: 26px;
+    }
+
+    .symbol {
+      width: 58px;
+      height: 58px;
+      display: grid;
+      place-items: center;
+      margin: 0 auto 18px;
+      background: #eeebff;
+      border-radius: 18px;
+      font-size: 29px;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 29px;
+      margin-bottom: 10px;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #77748a;
+      line-height: 1.6;
+      margin-bottom: 27px;
+    }
+
+    label {
+      display: block;
+      font-size: 14px;
+      font-weight: bold;
+      margin: 17px 0 8px;
+    }
+
+    input {
+      width: 100%;
+      padding: 14px;
+      border: 1px solid #e1deed;
+      border-radius: 12px;
+      font-size: 15px;
+      outline: none;
+    }
+
+    input:focus {
+      border-color: #6256d9;
+      box-shadow: 0 0 0 3px #6256d918;
+    }
+
+    button {
+      width: 100%;
+      padding: 15px;
+      margin-top: 25px;
+      border: 0;
+      border-radius: 12px;
+      background: #6256d9;
+      color: white;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:disabled {
+      opacity: 0.65;
+      cursor: not-allowed;
+    }
+
+    .message {
+      display: none;
+      margin-top: 16px;
+      padding: 12px;
+      border-radius: 10px;
+      font-size: 14px;
+      line-height: 1.5;
+      overflow-wrap: anywhere;
+    }
+
+    .message.error {
+      display: block;
+      background: #fff0f0;
+      color: #a51d2d;
+    }
+
+    .message.success {
+      display: block;
+      background: #eaf8ef;
+      color: #176b39;
+    }
+
+    .bottom {
+      text-align: center;
+      color: #77748a;
+      margin-top: 22px;
+      font-size: 14px;
+    }
+
+    a {
+      color: #6256d9;
+      font-weight: bold;
+      text-decoration: none;
+    }
+
+    .back {
+      display: block;
+      text-align: center;
+      margin-top: 22px;
+      font-size: 14px;
+    }
+  </style>
+</head>
+
+<body>
+  <main class="card">
+    <div class="logo">✦ LifeTrack</div>
+    <div class="symbol">🌱</div>
+
+    <h1>Create your account</h1>
+    <p class="subtitle">Start your journey, one day at a time.</p>
+
+    <form id="registerForm">
+      <label for="name">Full name</label>
+      <input
+        id="name"
+        name="name"
+        type="text"
+        placeholder="Enter your name"
+        autocomplete="name"
+        maxlength="100"
+        required
+      >
+
+      <label for="email">Email address</label>
+      <input
+        id="email"
+        name="email"
+        type="email"
+        placeholder="you@example.com"
+        autocomplete="email"
+        maxlength="254"
+        required
+      >
+
+      <label for="password">Password</label>
+      <input
+        id="password"
+        name="password"
+        type="password"
+        minlength="8"
+        maxlength="128"
+        placeholder="At least 8 characters"
+        autocomplete="new-password"
+        required
+      >
+
+      <label for="confirmPassword">Confirm password</label>
+      <input
+        id="confirmPassword"
+        name="confirmPassword"
+        type="password"
+        minlength="8"
+        maxlength="128"
+        placeholder="Enter password again"
+        autocomplete="new-password"
+        required
+      >
+
+      <button id="submitButton" type="submit">
+        Create Account →
+      </button>
+
+      <p id="formMessage" class="message" role="status" aria-live="polite"></p>
+    </form>
+
+    <p class="bottom">
+      Already have an account? <a href="login.html">Log in</a>
+    </p>
+
+    <a class="back" href="index.html">← Back to home</a>
+  </main>
+
+  <script>
+    const registerForm = document.getElementById("registerForm");
+    const submitButton = document.getElementById("submitButton");
+    const formMessage = document.getElementById("formMessage");
+
+    function showMessage(message, type) {
+      formMessage.textContent = message;
+      formMessage.className = "message " + type;
+    }
+
+    registerForm.addEventListener("submit", async function (event) {
+      event.preventDefault();
+
+      const name = document.getElementById("name").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value;
+      const confirmPassword =
+        document.getElementById("confirmPassword").value;
+
+      if (!name) {
+        showMessage("Please enter your name.", "error");
+        return;
+      }
+
+      if (password.length < 8) {
+        showMessage(
+          "Your password must contain at least 8 characters.",
+          "error"
+        );
+        return;
+      }
+
+      if (password !== confirmPassword) {
+        showMessage("Passwords do not match. Please try again.", "error");
+        return;
+      }
+
+      submitButton.disabled = true;
+      submitButton.textContent = "Creating account...";
+      formMessage.className = "message";
+
+      try {
+        const response = await fetch("/api/register", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ name, email, password })
+        });
+
+        const result = await response.json();
+
+        if (!response.ok) {
+          showMessage(
+            result.message || "Registration failed. Please try again.",
+            "error"
+          );
+          return;
+        }
+
+        showMessage(
+          "Account created successfully! Redirecting to login...",
+          "success"
+        );
+
+        window.setTimeout(() => {
+          window.location.href = "login.html";
+        }, 800);
+      } catch (error) {
+        showMessage(
+          "Could not connect to the server. Make sure LifeTrack is running.",
+          "error"
+        );
+      } finally {
+        submitButton.disabled = false;
+        submitButton.textContent = "Create Account →";
+      }
+    });
+  </script>
+</body>
+</html>
