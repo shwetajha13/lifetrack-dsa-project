@@ -1,0 +1,269 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LifeTrack | Your Life, Your Journey</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #fffaf5;
+      color: #252342;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 24px 8%;
+    }
+
+    .logo {
+      font-size: 27px;
+      font-weight: bold;
+      color: #6256d9;
+    }
+
+    nav a {
+      text-decoration: none;
+      color: #45435c;
+      margin-left: 25px;
+      font-weight: bold;
+    }
+
+    .hero {
+      min-height: 75vh;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 40px;
+      padding: 65px 8%;
+      background: linear-gradient(120deg, #fff1e8, #eeeaff, #e5f7f1);
+      border-radius: 0 0 55px 55px;
+    }
+
+    .hero-content {
+      max-width: 570px;
+    }
+
+    .tag {
+      display: inline-block;
+      background: white;
+      color: #6256d9;
+      padding: 10px 16px;
+      border-radius: 30px;
+      font-size: 14px;
+      margin-bottom: 24px;
+    }
+
+    h1 {
+      font-size: clamp(42px, 5vw, 65px);
+      line-height: 1.1;
+      margin-bottom: 22px;
+    }
+
+    h1 span {
+      color: #6256d9;
+    }
+
+    .description {
+      font-size: 17px;
+      line-height: 1.8;
+      color: #66647b;
+      margin-bottom: 30px;
+    }
+
+    .buttons {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 15px 25px;
+      border-radius: 13px;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .primary {
+      background: #6256d9;
+      color: white;
+    }
+
+    .secondary {
+      background: white;
+      color: #6256d9;
+      border: 1px solid #ded9ff;
+    }
+
+    .illustration {
+      min-width: 280px;
+      width: 380px;
+      height: 380px;
+      border-radius: 45% 55% 60% 40%;
+      background: linear-gradient(135deg, #b7aaff, #ffd3b8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 115px;
+      box-shadow: 0 25px 60px #6256d925;
+    }
+
+    .features {
+      padding: 65px 8%;
+      text-align: center;
+    }
+
+    .features h2 {
+      font-size: 34px;
+      margin-bottom: 12px;
+    }
+
+    .features > p {
+      color: #77748a;
+      margin-bottom: 35px;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 22px;
+      text-align: left;
+    }
+
+    .card {
+      background: white;
+      padding: 28px;
+      border-radius: 22px;
+      box-shadow: 0 8px 30px #2523420b;
+      border: 1px solid #f0edf8;
+    }
+
+    .card .icon {
+      font-size: 32px;
+    }
+
+    .card h3 {
+      margin: 17px 0 10px;
+    }
+
+    .card p {
+      color: #77748a;
+      line-height: 1.7;
+    }
+
+    footer {
+      padding: 25px;
+      text-align: center;
+      color: #77748a;
+    }
+
+    a:hover {
+      opacity: 0.8;
+    }
+
+    @media (max-width: 800px) {
+      header {
+        padding: 20px 6%;
+      }
+
+      nav a {
+        margin-left: 10px;
+        font-size: 14px;
+      }
+
+      .hero {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 50px 7%;
+      }
+
+      .illustration {
+        align-self: center;
+        width: 260px;
+        min-width: 0;
+        height: 260px;
+        font-size: 85px;
+      }
+
+      .cards {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="logo">✦ LifeTrack</div>
+
+    <nav>
+      <a href="#features">Features</a>
+      <a href="login.html">Login</a>
+      <a href="register.html">Join Us</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-content">
+        <div class="tag">✧ YOUR JOURNEY STARTS HERE</div>
+
+        <h1>Make every day <span>count.</span></h1>
+
+        <p class="description">
+          Build better habits, organize your daily activities,
+          track your goals, and celebrate your progress.
+          Your journey, all in one place.
+        </p>
+
+        <div class="buttons">
+          <a class="btn primary" href="register.html">Get Started →</a>
+          <a class="btn secondary" href="#features">Explore Features</a>
+        </div>
+      </div>
+
+      <div class="illustration" aria-label="Growing plant">🌱</div>
+    </section>
+
+    <section class="features" id="features">
+      <h2>A little progress, every day.</h2>
+      <p>Simple tools to help you stay on track.</p>
+
+      <div class="cards">
+        <article class="card">
+          <div class="icon">🎯</div>
+          <h3>Set Your Goals</h3>
+          <p>Create personal goals and take small steps toward achieving them.</p>
+        </article>
+
+        <article class="card">
+          <div class="icon">📅</div>
+          <h3>Track Your Days</h3>
+          <p>Record daily activities and revisit your progress from previous days.</p>
+        </article>
+
+        <article class="card">
+          <div class="icon">✨</div>
+          <h3>Celebrate Progress</h3>
+          <p>See what you have accomplished and keep building positive habits.</p>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    © 2026 LifeTrack · Your life, your journey.
+  </footer>
+</body>
+</html>
